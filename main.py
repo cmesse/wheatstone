@@ -51,16 +51,52 @@ Rval[7] = 100
 Rval[8] = 100
 Rval[9] = 100
 
-# finally, we impose the applied voltages as dirichlet conditions
-# here, we externally apply 0 V to node 0 and 1.2 kV to node 1
+# voltages are imposed as dirichlet conditions
+# currents are imposed as neumann conditions
 
-Ufix  = np.zeros( 2, dtype=int )
-Ufix[0] = 0
-Ufix[1] = 8
+# we always need at least one fixed voltage for the ground level
 
-Uval  = np.zeros( 2, dtype=float  )
-Uval[0] = 0
-Uval[1] = 1200
+# in this example:
+#   * mode==0 applies a voltage of 1.2 kV to node 8,
+#   * mode==1 applies a current of 6 A to node 8,
+#
+# both cases should return the same result
+
+mode = 1
+
+if mode == 0 :
+    # dirichlet boundary conditions
+    Ufix  = np.zeros( 2, dtype=int )
+    Uval  = np.zeros( 2, dtype=float  )
+
+    # neumann boundary conditions
+    Ifix = []
+    Ival = []
+
+    # set ground
+    Ufix[0] = 0
+    Uval[0] = 0
+
+    # set voltage on second node
+    Ufix[1] = 8
+    Uval[1] = 1200
+elif mode == 1 :
+    # dirichlet boundary conditions
+    Ufix = np.zeros(1, dtype=int)
+    Uval = np.zeros(1, dtype=float)
+
+    # set ground
+    Ufix[0] = 0
+    Uval[0] = 0
+
+    # neumann boundary conditions
+    Ifix  = np.zeros( 1, dtype=int )
+    Ival  = np.zeros( 1, dtype=float  )
+
+    # set current
+    Ifix[0] = 8
+    Ival[0] = 6
+
 
 ###################### END OF USER INPUT
 
@@ -69,6 +105,12 @@ Adj, idx, free = create_node_adjacency( Rconn, Ufix )
 
 # build the matrix and the right hand side
 K, f = compute_system( Rconn, Rval, Uval, Adj, idx, free )
+
+# add current BCs
+c=0
+for k in Ifix:
+    f[ idx[ k ] ] = Ival[c]
+    c+=1
 
 # per default, this calls the umfpack library which should be sufficiently fast
 x = scipy.sparse.linalg.spsolve( K, f )
