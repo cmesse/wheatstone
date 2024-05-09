@@ -88,5 +88,5 @@ c=0
 for e in Rconn :
     deltaU = u[e[1]]-u[e[0]]
     I = abs(deltaU / Rval[c])
-    c+=1
     print("resistor {:2g} : {:8.3f} A".format(c, I))
+    c += 1
