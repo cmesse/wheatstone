@@ -8,15 +8,15 @@ from interface import *
 #
 #                (-)
 #                 |
-#   (2)---[R0]---(0)---[R1]---(3)
+#   (1)---[R0]---(0)---[R1]---(2)
 #   |                         |
 #  [R6]                      [R7]
 #   |                         |
-#  (4)---[R2]---(5)---[R3]---(6)
+#  (3)---[R2]---(4)---[R3]---(5)
 #   |                         |
 #  [R8]                      [R9]
 #   |                         |
-#  (7)---[R4]---(1)---[R5]---(8)
+#  (6)---[R4]---(8)---[R5]---(7)
 #                |
 #               (+)
 
@@ -26,16 +26,16 @@ from interface import *
 # the orientation does not matter
 
 Rconn   = np.zeros( (10,2), dtype=int )
-Rconn[0] = [ 2, 0 ]
-Rconn[1] = [ 0, 3 ]
-Rconn[2] = [ 4, 5 ]
-Rconn[3] = [ 5, 6 ]
-Rconn[4] = [ 7, 1 ]
-Rconn[5] = [ 1, 8 ]
-Rconn[6] = [ 2, 4 ]
-Rconn[7] = [ 3, 6 ]
-Rconn[8] = [ 4, 7 ]
-Rconn[9] = [ 6, 8 ]
+Rconn[0] = [ 1, 0 ]
+Rconn[1] = [ 0, 2 ]
+Rconn[2] = [ 3, 4 ]
+Rconn[3] = [ 4, 5 ]
+Rconn[4] = [ 6, 8 ]
+Rconn[5] = [ 8, 7 ]
+Rconn[6] = [ 1, 3 ]
+Rconn[7] = [ 2, 5 ]
+Rconn[8] = [ 3, 6 ]
+Rconn[9] = [ 5, 7 ]
 
 # next, we need to assign the resistor values in Ohm
 
@@ -56,7 +56,7 @@ Rval[9] = 100
 
 Ufix  = np.zeros( 2, dtype=int )
 Ufix[0] = 0
-Ufix[1] = 1
+Ufix[1] = 8
 
 Uval  = np.zeros( 2, dtype=float  )
 Uval[0] = 0
@@ -87,6 +87,6 @@ print( "\nCurrents" )
 c=0
 for e in Rconn :
     deltaU = u[e[1]]-u[e[0]]
-    I = deltaU / Rval[c]
+    I = abs(deltaU / Rval[c])
     c+=1
     print("resistor {:2g} : {:8.3f} A".format(c, I))
