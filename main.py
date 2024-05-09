@@ -52,7 +52,7 @@ Rval[8] = 100
 Rval[9] = 100
 
 # finally, we impose the applied voltages as dirichlet conditions
-# here, we externally apply 0 V to node 0 and 12 kV to node 1
+# here, we externally apply 0 V to node 0 and 1.2 kV to node 1
 
 Ufix  = np.zeros( 2, dtype=int )
 Ufix[0] = 0
